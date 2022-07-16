@@ -53,24 +53,28 @@ class Network:
                 for j in self.on_list:
                     i.connections.append(Connection(0, j))
 
-    def input(self, input_value_list: list):
-        for index, neuron in enumerate(self.in_list):
-            neuron.value = input_value_list[index]
+    def input(self, input_value_list: list, time: int):
+        for index, inputed_value in enumerate(input_value_list[time]):
+            self.in_list[index].value = int(inputed_value)
 
     def output(self, output_value_list: list):
         for index, neuron in enumerate(self.on_list):
-            exponent = -neuron.rate * (neuron.value + neuron.midpoint)
-            if exponent >= 100:
-                neuron.value = 0.0
-            elif exponent <= -100:
-                neuron.value = 1.0
+            if neuron.value >= neuron.midpoint:
+                neuron.value = 1
             else:
-                neuron.value = 1 / (1 + math.pow(math.e, exponent))
+                neuron.value = 0
+            # exponent = -neuron.rate * (neuron.value + neuron.midpoint)
+            # if exponent >= 100:
+            #     neuron.value = 0.0
+            # elif exponent <= -100:
+            #     neuron.value = 1.0
+            # else:
+            #     neuron.value = 1 / (1 + math.pow(math.e, exponent))
             output_value_list[index] = neuron.value
             neuron.value = 0
 
-    def run(self, input_value_list: list, output_value_list: list):
-        self.input(input_value_list)
+    def run(self, input_value_list: list, output_value_list: list, time: int):
+        self.input(input_value_list, time)
         [neuron.transmit() for neuron in self.in_list]
         [[connection.transmit() for connection in neuron.connections] for neuron in self.in_list]
         for layer in self.hn_list:
@@ -105,11 +109,18 @@ class Network:
                     i.connections[index].weight += random.uniform(-m_rate, m_rate)
                     i.connections[index].neuron = j
 
-    def calc_cost(self, output_value_list: list, desired_value_list: list, mode: str = 'rewrite'):
+    def calc_cost(self, output_value_list: list, desired_value_list: list, running_cost1: float, time: int,
+                  mode: str = 'rewrite', neuron_num: int = None):
         if mode == 'rewrite':
             self.cost = 0
         for index, value in enumerate(output_value_list):
-            self.cost += abs(desired_value_list[index] - value)
+            # print(f'outputs: {output_value_list[index]} desired: {desired_value_list[index]}')
+            running_cost1 += abs(desired_value_list[time][index] - value)
+            # print(running_cost1)
+        if running_cost1 != 0:
+            self.cost += 1
+        # if neuron_num is not None:
+        #     return abs(desired_value_list[neuron_num] - output_value_list[neuron_num]) / 196.83
 
     def copy(self):
         return copy.deepcopy(self)
