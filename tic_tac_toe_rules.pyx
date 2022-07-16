@@ -1,10 +1,14 @@
 def tic_tac_toe_rules(network):
-    cdef int times, index, output_counter, inputs_bin_len, num, inverse_index
+    cdef int times, index, output_counter, inputs_bin_len, num, inverse_index, running_cost
     cdef int inputs[18]
     cdef int desired[9]
+    cdef float costs[9]
     cdef bint valid
+    for i in range(9):
+        costs[i] = 0.0
     outputs = [0 for i in range(9)]
     for times in range(2 ** 18):
+        running_cost = 0
         output_counter = 0
         valid = True
         num = times + 1
@@ -29,4 +33,9 @@ def tic_tac_toe_rules(network):
             list_inputs = [i for i in inputs[:18]]
             list_desired = [i for i in desired[:9]]
             network.run(list_inputs, outputs)
-            network.calc_cost(outputs, list_desired, 'add')
+            # for i in range(9):
+                # costs[i] +=
+            network.calc_cost(outputs, list_desired, running_cost, 'add')
+            # print(running_cost)
+    print(costs)
+    print(network.cost)
