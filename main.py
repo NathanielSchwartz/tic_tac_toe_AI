@@ -8,7 +8,7 @@ file_write = open('best_network', mode='w')
 if file_read.read() != '':
     brain1 = file_read.read()
 else:
-    brain1 = Network(18, 1, 1, 9)
+    brain1 = Network(18, 9, 1, 9)
     brain1.generate()
     tic_tac_toe_rules(brain1)
     # file_write.write(brain1)
@@ -16,7 +16,7 @@ count = 0
 tries = 1
 lowest = math.inf
 accuracy = 1
-while accuracy < 99 and count < 1000 and tries < 1000:
+while accuracy < 99 and count < 10000 and tries < 10000:
     start = datetime.now()
     count += 1
     brain2 = brain1.copy()
@@ -29,14 +29,13 @@ while accuracy < 99 and count < 1000 and tries < 1000:
         tries += 1
     if brain1.cost < lowest:
         lowest = brain1.cost
-        accuracy = (brain1.on_num * math.pow(3, 9) - lowest) /\
-                   (brain1.on_num * math.pow(3, 9)) * 100
+        accuracy = (19683 - lowest) / 196.83
         # file_write.write(brain1)
-        print(f'lowest cost:{lowest}, accuracy:{round(accuracy, 2)}')
-    print(f'Generation Count: {count}. Time: {datetime.now() - start}. Accuracy: {round(accuracy, 2)}')
+    print(f'Lowest cost:{lowest}, Accuracy:{round(accuracy, 3)}')
+    print(f'Generation Count: {count}, Time: {datetime.now() - start}\n')
 if accuracy >= 99:
     print(f'SUCCESS:{count}')
-    print(f'lowest cost:{lowest}, accuracy:{round(accuracy, 2)}')
+    print(f'lowest cost:{lowest}, accuracy:{round(accuracy, 3)}')
 else:
     print('FAILURE')
-    print(f'lowest cost:{lowest}, accuracy:{round(accuracy, 2)}')
+    print(f'lowest cost:{lowest}, accuracy:{round(accuracy, 3)}')
